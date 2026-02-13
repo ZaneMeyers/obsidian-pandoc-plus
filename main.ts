@@ -1,4 +1,3 @@
-
 /*
  * main.ts
  *
@@ -47,6 +46,19 @@ export default class PandocPlugin extends Plugin {
                     if (!this.currentFileCanBeExported(pandocFormat as OutputFormat)) return false;
                     if (!checking) {
                         this.startPandocExport(this.getCurrentFile(), pandocFormat as OutputFormat, extension, shortName);
+                    }
+                    return true;
+                }
+            });
+
+            const clipboardName = 'Copy as ' + prettyName;
+            this.addCommand({
+                id: 'pandoc-clipboard-' + pandocFormat, name: clipboardName,
+                checkCallback: (checking: boolean) => {
+                    if (!this.app.workspace.activeLeaf) return false;
+                    if (!this.currentFileCanBeExported(pandocFormat as OutputFormat)) return false;
+                    if (!checking) {
+                        this.startPandocClipboard(this.getCurrentFile(), pandocFormat as OutputFormat, shortName);
                     }
                     return true;
                 }
@@ -159,6 +171,73 @@ export default class PandocPlugin extends Plugin {
 
         } catch (e) {
             new Notice('Pandoc export failed: ' + e.toString(), 15000);
+            console.error(e);
+        }
+    }
+
+    async startPandocClipboard(inputFile: string, format: OutputFormat, shortName: string) {
+        new Notice(`Copying ${inputFile} as ${shortName} to clipboard`);
+
+        const view = this.app.workspace.getActiveViewOfType(MarkdownView);
+        
+        try {
+            let content: string;
+
+            switch (this.settings.exportFrom) {
+                case 'html': {
+                    const { html, metadata } = await render(this, view, inputFile, format);
+
+                    if (format === 'html') {
+                        content = html;
+                    } else {
+                        // Spawn Pandoc
+                        const metadataFile = temp.path();
+                        const metadataString = YAML.stringify(metadata);
+                        await fs.promises.writeFile(metadataFile, metadataString);
+                        const result = await pandoc(
+                            {
+                                file: 'STDIN', contents: html, format: 'html', metadataFile,
+                                pandoc: this.settings.pandoc, pdflatex: this.settings.pdflatex,
+                                directory: path.dirname(inputFile),
+                            },
+                            { file: 'STDOUT', format },
+                            this.settings.extraArguments.split('\n')
+                        );
+                        if (result.error.length) {
+                            new Notice('Pandoc warnings:' + result.error, 10000);
+                        }
+                        content = result.result;
+                    }
+                    break;
+                }
+                case 'md': {
+                    const result = await pandoc(
+                        {
+                            file: inputFile, format: 'markdown',
+                            pandoc: this.settings.pandoc, pdflatex: this.settings.pdflatex,
+                            directory: path.dirname(inputFile),
+                        },
+                        { file: 'STDOUT', format },
+                        this.settings.extraArguments.split('\n')
+                    );
+                    if (result.error.length) {
+                        new Notice('Pandoc warnings:' + result.error, 10000);
+                    }
+                    content = result.result;
+                    break;
+                }
+            }
+
+            await navigator.clipboard.writeText(content);
+            new Notice('Successfully copied to clipboard as ' + shortName);
+
+            if (this.settings.showCLICommands) {
+                // For clipboard operations, show what the equivalent command would be
+                new Notice('Equivalent: pandoc ... -o - (output to stdout)', 10000);
+            }
+
+        } catch (e) {
+            new Notice('Pandoc clipboard copy failed: ' + e.toString(), 15000);
             console.error(e);
         }
     }

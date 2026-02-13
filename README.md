@@ -1,31 +1,41 @@
-## Obsidian Pandoc Plugin
+# obsidian-pandoc-plus
 
-This is a Pandoc export plugin for Obsidian (https://obsidian.md).
+Fork of [Obsidian Pandoc](./obsidian-pandoc-readme.md)
+implementing various functionality that I think is helpful.
+I would PR these, except they'd probably want me to squash commits
+or some other made up thing.
+Also I'm not emotionally prepared to be told no.
 
-It adds command palette options to export your notes to a variety of formats including Word Documents, PDFs, ePub books, HTML websites, PowerPoints and LaTeX among (many) others. This is all thanks to [Pandoc](https://pandoc.org/).
+## New Features
 
-This lets you **write presentations**, **draft books**, **make webpages**, and **write assignments** all in Markdown, and export to whichever format you fancy, all without leaving Obsidian.
+### New Commands: "Copy As ..."
 
-Note: this plugin is in beta, and there are often minor formatting issues. Make sure to proof-read the output!
+Inspiration:
 
-![screenshot of command palette](./command-palette.png)
+* [Copy as HTML](https://github.com/jenningsb2/copy-as-html)
+* [Copy Document as HTML](https://github.com/mvdkwast/obsidian-copy-as-html)
 
-## [Installation](https://github.com/OliverBalfour/obsidian-pandoc/wiki/Installation)
+Neither are actively maintained.
 
-Installation instructions are on the wiki, use the above link
+## Planned Features
 
-Developer setup instructions are in [development.md](./development.md)
+### New Export Format: Rich Text Format (.rtf)
 
-## Basic usage
-* Press Ctrl+P/Cmd+P to show the command palette
-* Search "Pandoc"
-* Choose your export format
-* If all goes well, it will say it was successful
-* If you exported a file called `Pandoc.md` as a Word Document, in your file explorer there will be a `Pandoc.docx` file in the same folder
+For pasting to MS Office products,
+which do not respect certain CSS attributes
+(`background-color`, `text-decoration`).
 
-## Documentation
-* [Using Pandoc templates](https://github.com/OliverBalfour/obsidian-pandoc/wiki/Pandoc-Templates)
-* [Using Pandoc citations](https://github.com/OliverBalfour/obsidian-pandoc/wiki/Citations-(work-in-progress))
-* [Combining/concatenating documents](https://github.com/OliverBalfour/obsidian-pandoc/wiki/Combining-Documents)
-* [Troubleshooting](https://github.com/OliverBalfour/obsidian-pandoc/wiki/Troubleshooting)
-* [Installation](https://github.com/OliverBalfour/obsidian-pandoc/wiki/Installation)
+## Known Issues
+
+"Copy As ..." currently allows all the same formats as Oliver's "Export As ...",
+which causes strange behavior for binary formats (.pdf, .docx, .pptx).
+Not really an issue, simply refrain from doing that.
+I'll fix it later.
+
+## Contributing
+
+See Oliver's [development.md](./development.md)
+
+Markup content should utilize [semantic line breaks](https://github.com/sembr/specification).
+If you submit a PR rewrapping _my_ text to sentences or n columns,
+kindly provide your cell number so I can personally ask you where you get the nerve.
