@@ -11,7 +11,7 @@ import * as path from 'path';
 
 import { Notice, Plugin, FileSystemAdapter, MarkdownView } from 'obsidian';
 import { lookpath } from 'lookpath';
-import { pandoc, inputExtensions, outputFormats, OutputFormat, needsLaTeX, needsPandoc } from './pandoc';
+import { pandoc, inputExtensions, outputFormats, OutputFormat, needsLaTeX, needsPandoc, isCopyable, copyableFormats } from './pandoc';
 import * as YAML from 'yaml';
 import * as temp from 'temp';
 
@@ -50,7 +50,8 @@ export default class PandocPlugin extends Plugin {
                     return true;
                 }
             });
-
+        };
+        for (let [prettyName, pandocFormat, extension, shortName] of copyableFormats) {
             const clipboardName = 'Copy as ' + prettyName;
             this.addCommand({
                 id: 'pandoc-clipboard-' + pandocFormat, name: clipboardName,

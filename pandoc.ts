@@ -55,6 +55,7 @@ export const outputFormats = [
     ['reStructured Text (RST)', 'rst', 'rst', 'RST'],
     ['DokuWiki', 'dokuwiki', 'txt', 'DokuWiki'],
     ['MediaWiki', 'mediawiki', 'mediawiki', 'MediaWiki'],
+    ['Rich Text (rtf)', 'rtf', 'rtf', 'Rich Text'],
 ];
 
 export interface PandocInput {
@@ -94,6 +95,16 @@ export function needsUnicodeStripped(output: PandocOutput): boolean {
         || output.format === 'pdf'
         || output.format === 'beamer';
 }
+
+export function isCopyable(format: OutputFormat): boolean {
+    return format !== 'pdf'
+        && format !== 'docx'
+        && format !== 'odt'
+        && format !== 'epub'
+        && format !== 'pptx';
+}
+
+export const copyableFormats = outputFormats.filter(([, format]) => isCopyable(format as OutputFormat));
 
 // Note: extraParams is a list of strings like ['-o', 'file.md']
 // This rejects if the file doesn't get created

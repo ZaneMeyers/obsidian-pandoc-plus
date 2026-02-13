@@ -17,20 +17,11 @@ Inspiration:
 
 Neither are actively maintained.
 
-## Planned Features
-
 ### New Export Format: Rich Text Format (.rtf)
 
 For pasting to MS Office products,
 which do not respect certain CSS attributes
 (`background-color`, `text-decoration`).
-
-## Known Issues
-
-"Copy As ..." currently allows all the same formats as Oliver's "Export As ...",
-which causes strange behavior for binary formats (.pdf, .docx, .pptx).
-Not really an issue, simply refrain from doing that.
-I'll fix it later.
 
 ## Contributing
 
